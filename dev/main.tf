@@ -27,6 +27,15 @@ module "vnet" {
     address_space = ["10.0.0.0/20"]
 }
 
+module "vnet2" {
+    depends_on = [ module.rg ]
+  source = "../modules/vnets"
+    vnet_name = "dev-vnet2"
+    rg_name = "dev-rg"
+    location = "East US"
+    address_space = ["10.0.0.0/20"]
+}
+
 module "subnet" {
     depends_on = [ module.vnet ]
     source = "../modules/subnets"
