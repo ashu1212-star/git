@@ -4,6 +4,12 @@ module "rg" {
     location = "East US"
   
 }
+module "rg" {
+    source = "../modules/RG"
+    rg_name = "dev-rg"
+    location = "East US"
+  
+}
 
 module "vnet" {
     depends_on = [ module.rg ]
