@@ -11,6 +11,13 @@ module "rg" {
   
 }
 
+module "rg2" {
+    source = "../modules/RG"
+    rg_name = "dev-rg2"
+    location = "East US"
+  
+}
+
 module "vnet" {
     depends_on = [ module.rg ]
   source = "../modules/vnets"
