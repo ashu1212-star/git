@@ -1,0 +1,53 @@
+trigger: none 
+pool: lenovoagent
+
+jobs:
+- job: Terraform_install_and_terraform_init
+  steps:
+  - task: TerraformInstaller@1
+    displayName: Tool install
+    inputs:
+      terraformVersion: 'latest'
+  - task: TerraformTask@5
+    displayName: Terraform init
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+      backendServiceArm: 'svctoazure'
+      backendAzureRmStorageAccountName: 'storagetest17'
+      backendAzureRmContainerName: 'container17'
+      backendAzureRmKey: 'terraform.tfstae'
+- job: scanning_and_plan 
+  steps:
+  - task: tfsec@1
+    displayName: scanning
+    inputs:
+      version: 'v1.26.0'
+      dir: '''$(System.DefaultWorkingDirectory)/dev'''
+  - task: TerraformTask@5
+    displayName: Terraform plan
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+      environmentServiceNameAzureRM: 'svctoazure'
+
+- job: manual_validation
+  steps:
+  - task: ManualValidation@1
+    displayName: Manual validate
+    inputs:
+      notifyUsers: 'ashutosh.pal26@outlook.com'
+      approvers: 'ashutosh.pal26@outlook.com'
+
+
+- job: Terraform_apply  
+  steps:
+  - task: TerraformTask@5
+    displayName: Terraform apply
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+      environmentServiceNameAzureRM: 'svctoazure'
