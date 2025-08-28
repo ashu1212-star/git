@@ -33,13 +33,13 @@ jobs:
       workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
       environmentServiceNameAzureRM: 'svctoazure'
 
-- job: manual_validation
-  steps:
-  - task: ManualValidation@1
-    displayName: Manual validate
-    inputs:
-      notifyUsers: 'ashutosh.pal26@outlook.com'
-      approvers: 'ashutosh.pal26@outlook.com'
+# - job: manual_validation
+#   steps:
+#   - task: ManualValidation@1
+#     displayName: Manual validate
+#     inputs:
+#       notifyUsers: 'ashutosh.pal26@outlook.com'
+#       approvers: 'ashutosh.pal26@outlook.com'
 
 
 - job: Terraform_apply  
