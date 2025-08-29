@@ -2,14 +2,14 @@ trigger: none
 pool: lenovoagent
 
 jobs:
-- job: Terraform_install_and_terraform_init
+- job: Terraform_plan
   steps:
   - task: TerraformInstaller@1
     displayName: Tool install
     inputs:
       terraformVersion: 'latest'
   - task: TerraformTask@5
-    displayName: Terraform init
+    displayName: Terraform init 
     inputs:
       provider: 'azurerm'
       command: 'init'
@@ -18,13 +18,6 @@ jobs:
       backendAzureRmStorageAccountName: 'storagetest17'
       backendAzureRmContainerName: 'container17'
       backendAzureRmKey: 'terraform.tfstae'
-- job: scanning_and_plan 
-  steps:
-  - task: tfsec@1
-    displayName: scanning
-    inputs:
-      version: 'v1.26.0'
-      dir: '''$(System.DefaultWorkingDirectory)/dev'''
   - task: TerraformTask@5
     displayName: Terraform plan
     inputs:
@@ -32,17 +25,29 @@ jobs:
       command: 'plan'
       workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
       environmentServiceNameAzureRM: 'svctoazure'
+    
+- job: scanning
+  steps:
+  - task: tfsec@1
+    displayName: scanning
+    inputs:
+      version: 'v1.26.0'
+      dir: '''$(System.DefaultWorkingDirectory)/dev'''
+  
+- job: manual_validation
+  dependsOn: Terraform_plan 
+  pool: server
+  steps:
+  - task: ManualValidation@1
+    displayName: Manual validate
+    inputs:
+      notifyUsers: 'ashutosh.pal26@outlook.com'
+      approvers: 'ashutosh.pal26@outlook.com'
+      instructions: 'please approve'
 
-# - job: manual_validation
-#   steps:
-#   - task: ManualValidation@1
-#     displayName: Manual validate
-#     inputs:
-#       notifyUsers: 'ashutosh.pal26@outlook.com'
-#       approvers: 'ashutosh.pal26@outlook.com'
 
-
-- job: Terraform_apply  
+- job: Terraform_apply 
+  dependsOn: manual_validation
   steps:
   - task: TerraformTask@5
     displayName: Terraform apply
