@@ -30,8 +30,7 @@ module "rg" {
 # module "vnet1" {
 #     depends_on = [ module.rg ]
 #   source = "../modules/vnets"
-#     vnet_name = "dev-vnet1"}
-
+#     vnet_name = "dev-vnet1"
 # module "vnet2" {
 #     depends_on = [ module.rg ]
 #   source = "../modules/vnets"
