@@ -1,5 +1,5 @@
 trigger: none 
-pool: lenovoagent
+pool: Azure Pipelines
 
 jobs:
 - job: Terraform_plan
