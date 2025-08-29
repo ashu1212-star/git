@@ -31,12 +31,12 @@ jobs:
 - job: scanning 
   steps:
   - task: tfsec@1
-    displayName: scanning
     inputs:
       version: 'v1.26.0'
-      dir: '''$(System.DefaultWorkingDirectory)/dev'''
+      dir: '$(System.DefaultWorkingDirectory)/dev'
  
 - job: manual_validation
+  dependsOn: Terraform_plan
   pool: server
   steps:
   - task: ManualValidation@1
