@@ -3,13 +3,14 @@ pool: lenovoagent
 
 jobs:
 - job: Terraform_plan
+  dependsOn: scanning
   steps:
   - task: TerraformInstaller@1
     displayName: Tool install
     inputs:
       terraformVersion: 'latest'
   - task: TerraformTask@5
-    displayName: Terraform init 
+    displayName: Terraform init
     inputs:
       provider: 'azurerm'
       command: 'init'
@@ -18,6 +19,7 @@ jobs:
       backendAzureRmStorageAccountName: 'storagetest17'
       backendAzureRmContainerName: 'container17'
       backendAzureRmKey: 'terraform.tfstae'
+
   - task: TerraformTask@5
     displayName: Terraform plan
     inputs:
@@ -26,16 +28,15 @@ jobs:
       workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
       environmentServiceNameAzureRM: 'svctoazure'
     
-- job: scanning
+- job: scanning 
   steps:
   - task: tfsec@1
     displayName: scanning
     inputs:
       version: 'v1.26.0'
       dir: '''$(System.DefaultWorkingDirectory)/dev'''
-  
+ 
 - job: manual_validation
-  dependsOn: Terraform_plan 
   pool: server
   steps:
   - task: ManualValidation@1
@@ -43,10 +44,9 @@ jobs:
     inputs:
       notifyUsers: 'ashutosh.pal26@outlook.com'
       approvers: 'ashutosh.pal26@outlook.com'
-      instructions: 'please approve'
 
 
-- job: Terraform_apply 
+- job: Terraform_apply  
   dependsOn: manual_validation
   steps:
   - task: TerraformTask@5
