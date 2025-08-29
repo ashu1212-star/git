@@ -50,6 +50,16 @@ jobs:
   dependsOn: manual_validation
   steps:
   - task: TerraformTask@5
+    displayName: Terraform init
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+      backendServiceArm: 'svctoazure'
+      backendAzureRmStorageAccountName: 'storagetest17'
+      backendAzureRmContainerName: 'container17'
+      backendAzureRmKey: 'terraform.tfstae'
+  - task: TerraformTask@5
     displayName: Terraform apply
     inputs:
       provider: 'azurerm'
